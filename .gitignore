@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.DS_Store
+android/app/build
+android/build
+android/.gradle
+android/local.properties
+android/app/src/main/assets/public
+*.log
+
+# Original design export (14 MB); the logo art is already extracted to public/brands
+assets-src/
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
