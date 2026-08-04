@@ -33,22 +33,7 @@ Set under Edge Functions → Secrets. Never commit them.
 
 ## Entra app registration
 
-1. Entra admin centre → App registrations → New registration (single tenant).
-2. API permissions → Microsoft Graph → **Application** permissions → `Mail.Send`
-   → Grant admin consent.
-3. Certificates & secrets → New client secret → copy the *Value*.
-
-`Mail.Send` as an application permission grants send-as **any** mailbox in the
-tenant. Scope it to the one mailbox:
-
-```powershell
-New-ApplicationAccessPolicy -AppId <client-id> `
-  -PolicyScopeGroupId noreply@your-domain.com `
-  -AccessRight RestrictAccess `
-  -Description "Grand Tour auth mail"
-```
-
-Without this, a leaked secret can send mail as anyone in the organisation.
+See [SETUP.md](SETUP.md).
 
 ## Deploy
 
