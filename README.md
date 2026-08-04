@@ -37,7 +37,7 @@ Without `.env` the app still runs, local-only, with cloud sync disabled.
 
 ## Deploying to Cloudflare
 
-Live at **https://grandtour.<account>.workers.dev**
+Live at **https://grandtour.cyg.world**
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ERIC1148/GrandTour)
 

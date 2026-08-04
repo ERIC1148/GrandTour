@@ -7,6 +7,12 @@
   "main": "worker/index.ts",
   "compatibility_date": "2026-07-01",
 
+  // Served from the apex-owned subdomain, not *.workers.dev. Declared here
+  // rather than left as dashboard-only state so a fresh clone deploys to the
+  // same hostname.
+  "routes": [{ "pattern": "grandtour.cyg.world", "custom_domain": true }],
+  "workers_dev": false,
+
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
