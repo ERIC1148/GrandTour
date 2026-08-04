@@ -38,18 +38,28 @@ afterwards. The Secret ID is not it.
 > when it lapses, password-reset mail stops and the only visible symptom is a
 > 500 from the hook.
 
-## 3. Grant Mail.Send, then scope it down
-
-Two stages on purpose — get it sending, then restrict it — because the scoping
-step is the one that silently does nothing if you get it wrong.
-
-### Stage A — make it work
+## 3. Grant Mail.Send
 
 **API permissions → Add a permission → Microsoft Graph → Application
 permissions → `Mail.Send` → Add**, then **Grant admin consent**.
 
-At this point the app can send as **any mailbox in the tenant**. Test that mail
-flows, then continue.
+That is enough to send. The app can now send as any mailbox in the tenant,
+which on a single-mailbox tenant is the same set as the one mailbox you want.
+
+## 4. Scoping it to one mailbox — optional
+
+Worth doing only once the tenant has mailboxes you would not want this app
+sending as. On a one-person tenant it buys close to nothing: the capability
+that matters — sending as `noreply@your-domain.com` with SPF and DKIM aligned — is
+exactly what you are granting either way, and a scope does not restrain it.
+It also does nothing about the real risk, which is the client secret leaking.
+
+If you do want it:
+
+### Stage A — make it work
+
+Done in step 3 above. Confirm mail actually flows before scoping — otherwise
+you will not know which of the two steps broke it.
 
 ### Stage B — restrict to one mailbox
 
@@ -96,7 +106,7 @@ mailbox — it should come back `False`.
 
 ---
 
-## 4. Supabase
+## 5. Supabase
 
 **Edge Functions → Secrets:**
 
@@ -119,7 +129,7 @@ password resets and the like.
 and add `https://grandtour.cyg.world/**` to the redirect allow list. Reset links
 are built from this.
 
-## 5. Test
+## 6. Test
 
 Trigger a password reset from the app. Then check the Edge Function logs — a
 failure surfaces the exact Graph or token error rather than a generic message.
