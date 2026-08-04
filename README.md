@@ -35,6 +35,44 @@ npm run dev
 
 Without `.env` the app still runs, local-only, with cloud sync disabled.
 
+## Deploying to Cloudflare
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ERIC1148/GrandTour)
+
+Or from a checkout:
+
+```bash
+npx wrangler login
+npm run deploy
+```
+
+Then set the two credentials once — they are **not** baked into the bundle:
+
+```bash
+npx wrangler secret put SUPABASE_URL
+npx wrangler secret put SUPABASE_ANON_KEY
+```
+
+The Worker serves the built SPA from Workers Static Assets and generates one
+extra file, `/env.js`, holding those two values. The browser reads them at load
+time, falling back to build-time `VITE_*` if the file is absent.
+
+That indirection is the point: Cloudflare builds this repo without ever seeing a
+`.env`, so a build-time-only setup would deploy a credential-less app. It also
+means rotating a key is a dashboard edit rather than a rebuild.
+
+| | |
+|---|---|
+| `npm run deploy` | build, then deploy |
+| `npm run cf:dev` | run the real Worker locally on `wrangler dev` |
+| `npm run cf:check` | validate `wrangler.jsonc` without deploying |
+
+For `wrangler dev`, copy `.dev.vars.example` to `.dev.vars` — `wrangler dev`
+reads that file, not your shell environment.
+
+> The repo is private, so the button only works for an account that has
+> authorised Cloudflare's GitHub app against it.
+
 ## Android
 
 Requires JDK 21 and the Android SDK (platform 35, build-tools 35).
@@ -42,6 +80,9 @@ Requires JDK 21 and the Android SDK (platform 35, build-tools 35).
 ```bash
 npm run apk
 ```
+
+The APK has no Worker in front of it, so `/env.js` is absent and the app falls
+back to build-time config — build it with a populated `.env`.
 
 The debug APK lands in `android/app/build/outputs/apk/debug/`.
 

@@ -14,3 +14,7 @@ assets-src/
 
 # TypeScript incremental build cache
 tsconfig.tsbuildinfo
+
+# Wrangler local state
+.wrangler
+.dev.vars

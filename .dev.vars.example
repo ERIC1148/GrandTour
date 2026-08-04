@@ -1,0 +1,5 @@
+# Local values for `wrangler dev`. In production these are Worker secrets:
+#   npx wrangler secret put SUPABASE_URL
+#   npx wrangler secret put SUPABASE_ANON_KEY
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_xxx
