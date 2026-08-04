@@ -37,7 +37,15 @@ Without `.env` the app still runs, local-only, with cloud sync disabled.
 
 ## Deploying to Cloudflare
 
+Live at **https://grandtour.<account>.workers.dev**
+
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/ERIC1148/GrandTour)
+
+> The Worker name in `wrangler.jsonc` must match the one Cloudflare's GitHub
+> integration created from the repo name (`grandtour`). If they drift,
+> `wrangler deploy` quietly creates a *second* Worker and `wrangler secret put`
+> writes to whichever one the config names — leaving the deployed site with
+> empty credentials and no obvious error.
 
 Or from a checkout:
 
