@@ -1,7 +1,7 @@
 /**
  * Brand catalogue for the four loyalty programs the owner holds cards in.
  *
- * Each brand carries the "card face" it gets rendered as in the Stay Book: a
+ * Each brand carries the "card face" it gets rendered as in Grand Tour: a
  * gradient, ink/sub text colours tuned for contrast on that gradient, an
  * optional woven motif, and a two-letter property code (the same codes the
  * programs use on confirmation emails).

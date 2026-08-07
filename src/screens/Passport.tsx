@@ -59,7 +59,7 @@ export function Passport({
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-[52px_20px_52px_20px] bg-[rgba(176,122,99,.16)] px-[30px] py-[26px] backdrop-blur-[8px]"
+          className="blur-clip relative rounded-[52px_20px_52px_20px] bg-[rgba(176,122,99,.16)] px-[30px] py-[26px] backdrop-blur-[8px]"
         >
           <div className="text-[11.5px] font-bold tracking-[.1em] text-brass-2">
             NIGHTS THIS YEAR
@@ -123,7 +123,7 @@ export function Passport({
 
       {/* ---------------- pace ---------------- */}
       <div className="px-5 pb-8 sm:px-8">
-        <div className="rounded-[28px] bg-[rgba(236,229,230,.045)] p-6 backdrop-blur-[6px]">
+        <div className="blur-clip rounded-[28px] bg-[rgba(236,229,230,.045)] p-6 backdrop-blur-[6px]">
           <div className="mb-1 font-display text-[26px] italic text-ink">{year} 的节奏</div>
           <PaceCurve points={curve} goal={goal} year={year} />
         </div>
@@ -203,7 +203,7 @@ export function Passport({
         </div>
 
         {/* ---------------- side rail ---------------- */}
-        <div className="rounded-[28px] bg-[rgba(236,229,230,.045)] p-[26px] backdrop-blur-[6px]">
+        <div className="blur-clip rounded-[28px] bg-[rgba(236,229,230,.045)] p-[26px] backdrop-blur-[6px]">
           <div className="mb-4 font-display text-[24px] italic text-ink">会员计划</div>
           <ProgramDonut
             rows={programs.map((p) => ({

@@ -51,7 +51,7 @@ export function Auth() {
       >
         <div className="px-8 pb-8 pt-10">
           <div className="font-display text-[42px] italic leading-none text-ink">
-            Stay Book
+            Grand Tour
           </div>
           <div className="mt-3 text-[13px] leading-relaxed text-mute-2">
             住过的每一间房，都记在这本子里。

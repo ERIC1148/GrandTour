@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
+import {
+  Cloud,
+  CloudOff,
+  HardDrive,
+  RefreshCw,
+  Settings as SettingsIcon,
+  TriangleAlert,
+} from 'lucide-react';
 import { StayForm } from './components/StayForm';
 import { Button, Field, Sheet } from './components/ui';
 import { PROGRAMS } from './lib/brands';
@@ -74,7 +82,7 @@ export default function App() {
           transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
           className="font-display text-[28px] italic text-brass-2"
         >
-          Stay Book
+          Grand Tour
         </motion.div>
       </div>
     );
@@ -198,17 +206,31 @@ function SyncDot() {
           ? '#d98b8b'
           : '#83737a';
 
+  const Icon =
+    sync === 'synced'
+      ? Cloud
+      : sync === 'syncing'
+        ? RefreshCw
+        : sync === 'offline'
+          ? CloudOff
+          : sync === 'error'
+            ? TriangleAlert
+            : HardDrive;
+
   return (
-    <span className="flex items-center gap-2 text-[12.5px] text-mute-3">
+    <span className="flex items-center gap-[7px] text-[12.5px] text-mute-3">
       <motion.span
-        className="size-[7px] flex-none rounded-full"
-        style={{ background: color }}
-        animate={sync === 'syncing' ? { opacity: [0.3, 1, 0.3] } : { opacity: 1 }}
-        transition={{
-          duration: 1.2,
-          repeat: sync === 'syncing' ? Infinity : 0,
-        }}
-      />
+        className="flex flex-none items-center justify-center"
+        style={{ color }}
+        animate={sync === 'syncing' ? { rotate: 360 } : { rotate: 0 }}
+        transition={
+          sync === 'syncing'
+            ? { duration: 1.1, repeat: Infinity, ease: 'linear' }
+            : { duration: 0.2 }
+        }
+      >
+        <Icon size={13} strokeWidth={2} />
+      </motion.span>
       <span className="hidden sm:inline">{label}</span>
     </span>
   );
@@ -253,7 +275,7 @@ function Header({
       >
         <div className="flex min-w-0 items-center gap-7">
           <span className="foil flex-none font-display text-[26px] italic tracking-[.01em]">
-            Stay Book
+            Grand Tour
           </span>
           <nav className="hidden gap-1 md:flex">
             {TABS.map((t) => {
@@ -304,17 +326,18 @@ function Header({
               a phone, where it's the only way into settings and sign-out. */}
           <button
             onClick={onSettings}
-            className="hidden rounded-full border border-[rgba(236,229,230,.14)] px-4 py-[7px] text-[12.5px] font-semibold text-mute transition-colors hover:text-ink sm:block"
+            className="hidden items-center gap-[7px] rounded-full border border-[rgba(236,229,230,.14)] px-4 py-[7px] text-[12.5px] font-semibold text-mute transition-colors hover:text-ink sm:flex"
             title="设置"
           >
+            <SettingsIcon size={13} strokeWidth={2} />
             {tier ? `${tier} · ${nightsThisYear} 晚` : `${nightsThisYear} 晚`}
           </button>
           <button
             onClick={onSettings}
-            className="flex size-9 flex-none items-center justify-center rounded-full border border-[rgba(236,229,230,.14)] text-[15px] text-mute transition-colors hover:text-ink sm:hidden"
+            className="flex size-9 flex-none items-center justify-center rounded-full border border-[rgba(236,229,230,.14)] text-mute transition-colors hover:text-ink sm:hidden"
             aria-label="设置"
           >
-            ⚙
+            <SettingsIcon size={16} strokeWidth={2} />
           </button>
           <motion.button
             onClick={onAdd}
@@ -415,7 +438,7 @@ function Settings({ onClose }: { onClose: () => void }) {
     );
     const a = document.createElement('a');
     a.href = url;
-    a.download = `staybook-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `grandtour-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };

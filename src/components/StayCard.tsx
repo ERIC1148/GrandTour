@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { ArrowUp } from 'lucide-react';
 import { cardFace } from '../lib/brands';
 import { FitText } from './ui';
 import { compact, money, nightsLabel, shortDate } from '../lib/stats';
@@ -171,7 +172,7 @@ export function StayCard({
         </span>
         {upgraded && (
           <span
-            className="ml-auto flex-none rounded-full px-2 py-[3px] font-semibold uppercase"
+            className="ml-auto flex flex-none items-center gap-[3px] rounded-full py-[3px] pl-[6px] pr-2 font-semibold uppercase"
             style={{
               fontSize: 8.5,
               letterSpacing: '.12em',
@@ -180,6 +181,7 @@ export function StayCard({
               border: `1px solid ${face.sub}55`,
             }}
           >
+            <ArrowUp size={9} strokeWidth={2.5} />
             {stay.upgrade === 'suite'
               ? 'Suite'
               : stay.upgrade === 'corner'

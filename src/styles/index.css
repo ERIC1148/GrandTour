@@ -65,6 +65,19 @@ body {
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
 }
 
+/*
+ * WebKit (Safari, and the Android WebView Capacitor ships in) does not clip
+ * backdrop-filter to a rounded ancestor's border-radius — the blur bleeds out
+ * as a hard rectangle past the curved corners. A mask-image with no real
+ * transparency forces WebKit onto the code path that composites the filter
+ * within its own bounds instead. Chrome ignores it; it clips correctly either
+ * way. Every rounded container that also blurs its backdrop needs this.
+ */
+.blur-clip {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
+}
+
 /* Brass foil, used on the metric numerals and the wordmark. */
 .foil {
   background: linear-gradient(96deg, #c3ae97 0%, #f0dcc4 22%, #b07a63 46%, #efd6bc 70%, #c3ae97 100%);

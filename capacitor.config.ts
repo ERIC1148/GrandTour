@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.staybook.app',
-  appName: 'Stay Book',
+  appId: 'com.grandtour.app',
+  appName: 'Grand Tour',
   webDir: 'dist',
   android: {
     // The wine field goes edge to edge; the web layout already pads for the

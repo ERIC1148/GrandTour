@@ -10,9 +10,6 @@ Marriott Bonvoy, Hilton Honors, ALL — Accor, and Jinjiang WeHotel.
 Every stay renders as a keycard in its brand's own livery, with an embossed door
 number and the property's two-letter code watermarked across the face.
 
-> The app currently ships under the working name **Stay Book**; the rename to
-> Grand Tour is pending.
-
 ## Stack
 
 | | |

@@ -55,9 +55,9 @@ const DEFAULT_PROFILE: Profile = {
 
 const Ctx = createContext<StoreValue | null>(null);
 
-const cacheKey = (uid: string) => `staybook.stays.${uid}`;
-const profileKey = (uid: string) => `staybook.profile.${uid}`;
-const outboxKey = (uid: string) => `staybook.outbox.${uid}`;
+const cacheKey = (uid: string) => `grandtour.stays.${uid}`;
+const profileKey = (uid: string) => `grandtour.profile.${uid}`;
+const outboxKey = (uid: string) => `grandtour.outbox.${uid}`;
 const LOCAL_UID = 'local';
 
 function readJSON<T>(key: string, fallback: T): T {
@@ -183,7 +183,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setSync('synced');
       setLastSyncedAt(Date.now());
     } catch (err) {
-      console.error('[staybook] sync failed', err);
+      console.error('[grandtour] sync failed', err);
       setSync(
         typeof navigator !== 'undefined' && navigator.onLine === false ? 'offline' : 'error',
       );
@@ -279,7 +279,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setSync('synced');
       setLastSyncedAt(Date.now());
     } catch (err) {
-      console.error('[staybook] refresh failed', err);
+      console.error('[grandtour] refresh failed', err);
       setSync(
         typeof navigator !== 'undefined' && navigator.onLine === false ? 'offline' : 'error',
       );
@@ -382,7 +382,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           .from('profiles')
           .upsert({ user_id: user, ...next })
           .then(({ error }) => {
-            if (error) console.error('[staybook] profile save failed', error);
+            if (error) console.error('[grandtour] profile save failed', error);
           });
       }
     },

@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { MapPin } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { BarList, Odometer } from '../components/ui';
 import { byCity, byHotel, money } from '../lib/stats';
@@ -39,7 +40,10 @@ export function Cities({ stays, currency }: { stays: Stay[]; currency: string })
 
   return (
     <div className="mx-auto w-full max-w-[1240px] px-5 pb-12 pt-7 sm:px-8">
-      <div className="font-display text-[34px] italic leading-none text-ink">Cities</div>
+      <div className="flex items-center gap-2 font-display text-[34px] italic leading-none text-ink">
+        <MapPin size={26} strokeWidth={1.75} className="text-brass" />
+        Cities
+      </div>
       <div className="mt-2 text-[13px] text-mute-3">
         {cities.length} 座城市 · {countries.length} 个国家/地区
       </div>
@@ -89,7 +93,7 @@ export function Cities({ stays, currency }: { stays: Stay[]; currency: string })
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-7 rounded-[28px] bg-[rgba(236,229,230,.045)] p-[26px] backdrop-blur-[6px]"
+          className="blur-clip mt-7 rounded-[28px] bg-[rgba(236,229,230,.045)] p-[26px] backdrop-blur-[6px]"
         >
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div className="font-display text-[28px] italic text-ink">{detail.city}</div>

@@ -23,7 +23,7 @@ export const isConfigured = Boolean(url && key);
 
 if (!isConfigured) {
   console.warn(
-    '[staybook] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are missing — ' +
+    '[grandtour] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are missing — ' +
       'running local-only. Copy .env.example to .env to enable cloud sync.',
   );
 }
@@ -40,7 +40,7 @@ export const supabase = createClient(
       // Capacitor loads the app from a custom scheme, where URL-fragment
       // session detection does nothing useful.
       detectSessionInUrl: false,
-      storageKey: 'staybook.auth',
+      storageKey: 'grandtour.auth',
     },
   },
 );

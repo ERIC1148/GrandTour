@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
+import { Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { StayCard } from '../components/StayCard';
 import { PROGRAMS, type ProgramId } from '../lib/brands';
@@ -50,9 +51,11 @@ export function Stays({
               placeholder="搜酒店 / 城市 / 房号…"
               className="field !py-[9px] !pl-10 sm:!w-[220px]"
             />
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-mute-3">
-              ⌕
-            </span>
+            <Search
+              size={15}
+              strokeWidth={2}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-mute-3"
+            />
           </div>
           <select
             value={sort}

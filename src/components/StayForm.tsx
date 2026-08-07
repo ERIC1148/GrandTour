@@ -208,14 +208,14 @@ export function StayForm({
         <Field label="酒店">
           <input
             className="field"
-            list="staybook-hotels"
+            list="grandtour-hotels"
             value={d.hotel}
             placeholder="Sheraton Grand Hangzhou Wetland Park Resort"
             onChange={(e) => set('hotel', e.target.value)}
             onBlur={applyHotelMatch}
           />
         </Field>
-        <datalist id="staybook-hotels">
+        <datalist id="grandtour-hotels">
           {knownHotels.map((h) => (
             <option key={h.hotel} value={h.hotel} />
           ))}
@@ -226,13 +226,13 @@ export function StayForm({
         <Field label="城市">
           <input
             className="field"
-            list="staybook-cities"
+            list="grandtour-cities"
             value={d.city}
             placeholder="Hangzhou"
             onChange={(e) => set('city', e.target.value)}
           />
         </Field>
-        <datalist id="staybook-cities">
+        <datalist id="grandtour-cities">
           {knownCities.map((c) => (
             <option key={c} value={c} />
           ))}
