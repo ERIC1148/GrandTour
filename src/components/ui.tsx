@@ -249,8 +249,8 @@ export function Sheet({
             className="paper-deep relative max-h-[92dvh] w-full overflow-auto rounded-t-[30px] border border-[rgba(236,229,230,.09)] shadow-[0_-20px_60px_rgba(0,0,0,.6)] sm:max-w-[560px] sm:rounded-[30px]"
             initial={{ y: '4%', opacity: 0, scale: 0.98 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: '3%', opacity: 0, scale: 0.985 }}
-            transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ y: '3%', opacity: 0, scale: 0.985, transition: { duration: 0.2 } }}
+            transition={{ type: 'spring', stiffness: 380, damping: 32, mass: 0.9 }}
           >
             {children}
           </motion.div>

@@ -118,9 +118,9 @@ export default function App() {
       */}
       <motion.main
         key={tab}
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ type: 'spring', stiffness: 340, damping: 30, mass: 0.6 }}
       >
         {tab === 'passport' && (
           <Passport
@@ -281,9 +281,10 @@ function Header({
             {TABS.map((t) => {
               const on = tab === t.id;
               return (
-                <button
+                <motion.button
                   key={t.id}
                   onClick={() => onTab(t.id)}
+                  whileTap={{ scale: 0.94 }}
                   className="relative rounded-full px-4 py-[6px] text-[14px] transition-colors"
                   style={{
                     color: on ? 'var(--color-brass-2)' : 'var(--color-mute)',
@@ -301,7 +302,7 @@ function Header({
                     />
                   )}
                   <span className="relative font-semibold">{t.label}</span>
-                </button>
+                </motion.button>
               );
             })}
           </nav>
@@ -324,21 +325,23 @@ function Header({
           )}
           {/* Text chip with room for the tier on wide screens; a plain disc on
               a phone, where it's the only way into settings and sign-out. */}
-          <button
+          <motion.button
             onClick={onSettings}
+            whileTap={{ scale: 0.95 }}
             className="hidden items-center gap-[7px] rounded-full border border-[rgba(236,229,230,.14)] px-4 py-[7px] text-[12.5px] font-semibold text-mute transition-colors hover:text-ink sm:flex"
             title="设置"
           >
             <SettingsIcon size={13} strokeWidth={2} />
             {tier ? `${tier} · ${nightsThisYear} 晚` : `${nightsThisYear} 晚`}
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={onSettings}
+            whileTap={{ scale: 0.9 }}
             className="flex size-9 flex-none items-center justify-center rounded-full border border-[rgba(236,229,230,.14)] text-mute transition-colors hover:text-ink sm:hidden"
             aria-label="设置"
           >
             <SettingsIcon size={16} strokeWidth={2} />
-          </button>
+          </motion.button>
           <motion.button
             onClick={onAdd}
             whileTap={{ scale: 0.96 }}
@@ -370,9 +373,10 @@ function MobileNav({
         {TABS.map((t) => {
           const on = tab === t.id;
           return (
-            <button
+            <motion.button
               key={t.id}
               onClick={() => onTab(t.id)}
+              whileTap={{ scale: 0.92 }}
               className="relative py-1 text-[12.5px] font-semibold transition-colors"
               style={{
                 color: on ? 'var(--color-brass-2)' : 'var(--color-mute-3)',
@@ -386,7 +390,7 @@ function MobileNav({
                   transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                 />
               )}
-            </button>
+            </motion.button>
           );
         })}
       </div>

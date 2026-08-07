@@ -46,7 +46,7 @@ export function Auth() {
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ type: 'spring', stiffness: 220, damping: 24, mass: 0.9 }}
         className="paper w-full max-w-[420px] overflow-hidden rounded-[30px] border border-[rgba(236,229,230,.08)] shadow-[0_24px_60px_rgba(0,0,0,.55)]"
       >
         <div className="px-8 pb-8 pt-10">

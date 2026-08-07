@@ -1,4 +1,4 @@
-package com.staybook.app;
+package com.grandtour.app;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -58,8 +58,14 @@ export function Cities({ stays, currency }: { stays: Stay[]; currency: string })
               key={c.name}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: Math.min(i * 0.025, 0.5) }}
+              transition={{
+                type: 'spring',
+                stiffness: 300,
+                damping: 22,
+                delay: Math.min(i * 0.025, 0.5),
+              }}
               whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.95, transition: { duration: 0.12 } }}
               onClick={() => setSelected(on ? null : c.name)}
               className="rounded-2xl px-[18px] py-[14px] text-left transition-colors"
               style={{

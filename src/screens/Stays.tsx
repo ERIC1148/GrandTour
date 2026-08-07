@@ -68,9 +68,10 @@ export function Stays({
           </select>
           <div className="flex overflow-hidden rounded-full border border-[rgba(236,229,230,.14)]">
             {(['cards', 'table'] as const).map((v) => (
-              <button
+              <motion.button
                 key={v}
                 onClick={() => setView(v)}
+                whileTap={{ scale: 0.94 }}
                 className="px-4 py-[9px] text-[12.5px] font-semibold transition-colors"
                 style={{
                   background: view === v ? 'var(--color-wine)' : 'transparent',
@@ -78,7 +79,7 @@ export function Stays({
                 }}
               >
                 {v === 'cards' ? '卡片' : '表格'}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -93,9 +94,10 @@ export function Stays({
             id === 'all' ? stays.length : stays.filter((s) => s.program === id).length;
           if (id !== 'all' && count === 0) return null;
           return (
-            <button
+            <motion.button
               key={id}
               onClick={() => setProgram(id as ProgramId | 'all')}
+              whileTap={{ scale: 0.94 }}
               className="rounded-full px-[14px] py-[7px] text-[12.5px] font-semibold transition-all"
               style={{
                 background: on ? (p?.accent ?? 'var(--color-wine)') : 'rgba(236,229,230,.07)',
@@ -104,7 +106,7 @@ export function Stays({
               }}
             >
               {id === 'all' ? '全部' : p?.cn} <span className="opacity-60">{count}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>

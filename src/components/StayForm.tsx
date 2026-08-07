@@ -169,10 +169,10 @@ export function StayForm({
         <AnimatePresence>
           {brandOpen && brandOptions.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.18 }}
+              initial={{ opacity: 0, y: -6, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.98, transition: { duration: 0.12 } }}
+              transition={{ type: 'spring', stiffness: 500, damping: 32 }}
               className="absolute z-30 mt-1 max-h-[230px] w-full overflow-auto rounded-2xl border border-[rgba(236,229,230,.12)] bg-[#241820] p-1.5 shadow-[0_20px_50px_rgba(0,0,0,.6)]"
             >
               {brandOptions.map((b) => (

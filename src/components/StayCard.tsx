@@ -54,13 +54,16 @@ export function StayCard({
         py.set(0.5);
       }}
       onClick={onClick}
-      initial={{ opacity: 0, y: 22, rotateX: -8 }}
+      initial={{ opacity: 0, y: 26, rotateX: -8 }}
       animate={{ opacity: 1, y: 0, rotateX: 0 }}
       transition={{
-        duration: 0.55,
+        type: 'spring',
+        stiffness: 260,
+        damping: 24,
+        mass: 0.7,
         delay: Math.min(index * 0.045, 0.5),
-        ease: [0.22, 1, 0.36, 1],
       }}
+      whileHover={{ y: -3 }}
       whileTap={{ scale: 0.985 }}
       style={{
         background: face.face,

@@ -59,23 +59,53 @@ body {
     linear-gradient(168deg, #3a212a 0%, #281920 42%, #1c1318 100%);
 }
 
+/*
+ * The blur was never actually reaching the screen: Lightning CSS (Tailwind
+ * v4's compiler) treats a same-value `-webkit-backdrop-filter` +
+ * `backdrop-filter` pair declared in one rule as a redundant vendor-prefix
+ * duplicate and collapses them to just one — and it kept the `-webkit-`
+ * version, dropping the unprefixed standard property entirely. Verified by
+ * reading the compiled CSS: `.glass{-webkit-backdrop-filter:...}` with no
+ * `backdrop-filter` declaration anywhere in the rule. Every browser that
+ * doesn't alias `-webkit-backdrop-filter` back to the real thing — which in
+ * testing was every engine at hand, desktop Chrome included — rendered the
+ * element as a flat, unblurred tint with whatever is underneath bleeding
+ * straight through at full sharpness.
+ *
+ * Splitting the two declarations into separate rule blocks keeps Lightning
+ * CSS from ever seeing them together, so there is nothing for it to
+ * "deduplicate". `transform: translateZ(0)` plus `will-change` additionally
+ * force the browser to promote this onto its own GPU compositing layer,
+ * which some mobile Chromium builds otherwise skip for a plain (non-animated)
+ * sticky or fixed element — cheap insurance now that the filter itself is
+ * confirmed to reach the page.
+ */
 .glass {
-  background: rgba(33, 22, 25, 0.5);
-  backdrop-filter: blur(22px) saturate(1.2);
+  background: rgba(24, 16, 19, 0.82);
+  transform: translateZ(0);
+  will-change: backdrop-filter;
+}
+.glass {
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
+}
+.glass {
+  backdrop-filter: blur(22px) saturate(1.2);
 }
 
 /*
- * WebKit (Safari, and the Android WebView Capacitor ships in) does not clip
+ * WebKit (Safari, and older Android WebView builds) does not clip
  * backdrop-filter to a rounded ancestor's border-radius — the blur bleeds out
  * as a hard rectangle past the curved corners. A mask-image with no real
  * transparency forces WebKit onto the code path that composites the filter
  * within its own bounds instead. Chrome ignores it; it clips correctly either
- * way. Every rounded container that also blurs its backdrop needs this.
+ * way. Every rounded container that also blurs its backdrop needs this, plus
+ * the same layer-promotion insurance as `.glass` above.
  */
 .blur-clip {
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   mask-image: radial-gradient(white, black);
+  transform: translateZ(0);
+  will-change: backdrop-filter;
 }
 
 /* Brass foil, used on the metric numerals and the wordmark. */
