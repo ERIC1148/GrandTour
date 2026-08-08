@@ -1,5 +1,13 @@
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import { useMemo, useRef } from 'react';
+import { Odometer } from '../components/ui';
 import { PROGRAMS } from '../lib/brands';
 import { byCity, overview } from '../lib/stats';
 import type { Stay } from '../lib/types';
@@ -503,32 +511,77 @@ function CompassRose({ className = '' }: { className?: string }) {
 // ---------------------------------------------------------------------------
 
 const RECORDS = [
-  { k: '品牌与酒店', v: '约 85 个品牌，四大集团' },
-  { k: '城市与国家', v: '走过的每一处' },
-  { k: '入住房型', v: '按实际住到的，不是订的' },
-  { k: '房间号', v: '压花铜牌，像门牌一样' },
-  { k: '现金或积分', v: '花掉的与赚回的' },
-  { k: '评分与备注', v: '值不值得再来' },
+  { k: '品牌与酒店'},
+  { k: '城市与国家'},
+  { k: '入住房型' },
+  { k: '房间号'},
+  { k: '现金或积分'},
+  { k: '评分与备注'},
 ];
 
 const CRAFT = [
   { k: '界面', v: 'React 19 · Vite · TypeScript · Tailwind v4 · Motion' },
   { k: '数据', v: 'Supabase — Postgres、行级安全、实时同步' },
-  { k: '离线', v: '本地先落盘，联网后由出站队列补传' },
-  { k: '托管', v: 'Cloudflare Workers，配置在运行时注入' },
+  { k: '离线', v: '本地保存，联网后由出站队列补传' },
   { k: '邮件', v: 'Microsoft Graph' },
 ];
 
-function Rule() {
+
+// ---------------------------------------------------------------------------
+// Staging
+// ---------------------------------------------------------------------------
+
+/**
+ * Sections arrive as you reach them rather than all at once on mount, which is
+ * what makes a long page feel like it's being walked through instead of
+ * scrolled past. `once` so nothing re-animates on the way back up.
+ */
+function Reveal({
+  children,
+  delay = 0,
+  y = 26,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  y?: number;
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
   return (
-    <div className="my-14 flex items-center gap-4" aria-hidden>
-      <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgba(176,122,99,.34)]" />
-      <svg width="34" height="10" viewBox="0 0 34 10" className="flex-none">
-        <path d="M0 5 H11 M23 5 H34" stroke="#b07a63" strokeOpacity=".5" strokeWidth="1" />
-        <path d="M17 1 L20 5 L17 9 L14 5 Z" fill="#c3ae97" fillOpacity=".6" />
-      </svg>
-      <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgba(176,122,99,.34)]" />
+    <motion.div
+      className={className}
+      initial={reduce ? undefined : { opacity: 0, y }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-70px' }}
+      transition={{ type: 'spring', stiffness: 210, damping: 26, mass: 0.8, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Chapter numeral — ornament that carries structure without adding words. */
+function Numeral({ n }: { n: string }) {
+  return (
+    <div className="mb-7 flex items-center gap-4" aria-hidden>
+      <span className="font-display text-[13px] italic tracking-[.2em] text-brass">{n}</span>
+      <span className="h-px w-16 bg-gradient-to-r from-[rgba(176,122,99,.5)] to-transparent" />
     </div>
+  );
+}
+
+/** Ambient light pooled behind a section, the way a lamp sits behind a desk. */
+function Glow({ className = '' }: { className?: string }) {
+  return (
+    <div
+      aria-hidden
+      className={`pointer-events-none absolute ${className}`}
+      style={{
+        background:
+          'radial-gradient(closest-side, rgba(176,122,99,.20), rgba(176,122,99,.07) 55%, rgba(176,122,99,0) 100%)',
+      }}
+    />
   );
 }
 
@@ -536,120 +589,231 @@ export function About({ stays }: { stays: Stay[] }) {
   const year = new Date().getFullYear();
   const o = useMemo(() => overview(stays, year), [stays, year]);
   const cities = useMemo(() => byCity(stays), [stays]);
+  const reduce = useReducedMotion();
 
   const lifetimeNights = o.lifetimeNights;
+  const brandCount = useMemo(
+    () => new Set(stays.map((s) => s.brand).filter(Boolean)).size,
+    [stays],
+  );
+
+
+  // Hero parallax: the card drifts up and tips slightly as the page leaves,
+  // so the first screen reads as a scene with depth rather than a flat banner.
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const cardY = useTransform(scrollYProgress, [0, 1], [0, -130]);
+  const cardTilt = useTransform(scrollYProgress, [0, 1], [0, -7]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 74]);
+  const heroFade = useTransform(scrollYProgress, [0, 0.72], [1, 0]);
+
+  const stats = [
+    { n: lifetimeNights, l: '晚' },
+    { n: stays.length, l: '次入住' },
+    { n: cities.length, l: '座城市' },
+    { n: brandCount, l: '个品牌' },
+  ];
 
   return (
-    <div className="mx-auto w-full max-w-[1240px] px-5 pb-20 pt-7 sm:px-8">
-      {/* ------------------------------------------------ hero */}
-      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-12 lg:grid-cols-[1fr_minmax(0,420px)]">
-        <div>
-          <div className="text-[11px] font-bold tracking-[.24em] text-brass">COLOPHON · 关于</div>
-          <h1 className="foil mt-4 font-display text-[54px] italic leading-[1.02] sm:text-[68px]">
-            Grand Tour
-          </h1>
-          <p className="mt-5 max-w-[46ch] text-[15px] leading-[1.85] text-mute">
-            十八世纪的欧洲，年轻人要花上几年横穿大陆，见识各处的建筑、饮食与礼节，
-            回来才算完整——那趟旅程就叫 Grand Tour。
-          </p>
+    <div className="w-full overflow-x-clip">
+      {/* ═══════════════════════════════════════════ 01 · hero */}
+      <section
+        ref={heroRef}
+        className="relative flex min-h-[calc(100dvh-140px)] items-center px-5 py-16 sm:px-8"
+      >
+        <Glow className="left-[-14%] top-[-12%] h-[620px] w-[620px]" />
+        <Glow className="right-[-10%] top-[24%] h-[520px] w-[520px] opacity-70" />
 
-          <div className="mt-9 flex flex-wrap gap-x-10 gap-y-5">
-            {[
-              { n: lifetimeNights, l: '晚' },
-              { n: stays.length, l: '次入住' },
-              { n: cities.length, l: '座城市' },
-              { n: new Set(stays.map((s) => s.brand).filter(Boolean)).size, l: '个品牌' },
-            ].map((m) => (
-              <div key={m.l}>
-                <div className="font-display text-[34px] leading-none text-gold">{m.n}</div>
-                <div className="mt-1 text-[11px] tracking-[.14em] text-mute-3">{m.l}</div>
+        <div className="mx-auto grid w-full max-w-[1240px] grid-cols-[minmax(0,1fr)] items-center gap-14 lg:grid-cols-[1fr_minmax(0,460px)]">
+          <motion.div style={reduce ? undefined : { y: textY, opacity: heroFade }}>
+            <motion.div
+              initial={reduce ? undefined : { opacity: 0, y: 14 }}
+              animate={reduce ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="text-[11px] font-bold tracking-[.24em] text-brass"
+            >
+              COLOPHON · 关于
+            </motion.div>
+
+            <motion.h1
+              initial={reduce ? undefined : { opacity: 0, y: 26 }}
+              animate={reduce ? undefined : { opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 180, damping: 24, delay: 0.08 }}
+              className="foil mt-5 font-display italic leading-[.98]"
+              style={{ fontSize: 'clamp(56px, 11vw, 132px)' }}
+            >
+              Grand Tour
+            </motion.h1>
+
+            <motion.p
+              initial={reduce ? undefined : { opacity: 0, y: 18 }}
+              animate={reduce ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-8 max-w-[44ch] text-[15.5px] leading-[1.95] text-mute"
+            >
+              十八世纪的欧洲，年轻人要花上几年横穿大陆，见识各处的建筑、饮食与礼节，
+              回来才算完整——那趟旅程就叫 Grand Tour。
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            style={reduce ? undefined : { y: cardY, rotate: cardTilt }}
+            initial={reduce ? undefined : { opacity: 0, scale: 0.94, y: 30 }}
+            animate={reduce ? undefined : { opacity: 1, scale: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 150, damping: 22, delay: 0.15 }}
+            className="flex justify-center lg:justify-end"
+          >
+            <Keycard nights={lifetimeNights} />
+          </motion.div>
+        </div>
+
+        {/* scroll cue */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-x-0 bottom-6 flex justify-center"
+          style={reduce ? undefined : { opacity: heroFade }}
+        >
+          <motion.svg
+            width="18"
+            height="30"
+            viewBox="0 0 18 30"
+            animate={reduce ? undefined : { y: [0, 7, 0] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <rect x="1" y="1" width="16" height="28" rx="8" fill="none" stroke="#b07a63" strokeOpacity=".4" />
+            <circle cx="9" cy="9" r="2" fill="#c3ae97" fillOpacity=".8" />
+          </motion.svg>
+        </motion.div>
+      </section>
+
+      {/* ═══════════════════════════════════════════ stats band */}
+      <section className="border-y border-[rgba(236,229,230,.07)] bg-[rgba(20,13,16,.34)] px-5 py-14 sm:px-8">
+        <div className="mx-auto grid max-w-[1240px] grid-cols-2 gap-y-10 sm:grid-cols-4">
+          {stats.map((m, i) => (
+            <Reveal key={m.l} delay={i * 0.07} className="text-center">
+              <div className="font-display text-[clamp(38px,5vw,58px)] leading-none text-gold">
+                <Odometer value={m.n} />
               </div>
-            ))}
-          </div>
+              <div className="mt-2 text-[11px] tracking-[.18em] text-mute-3">{m.l}</div>
+            </Reveal>
+          ))}
         </div>
+      </section>
 
-        <div className="flex justify-center lg:justify-end">
-          <Keycard nights={lifetimeNights} />
-        </div>
-      </div>
+      {/* ═══════════════════════════════════════════ 02 · what it records */}
+      <section className="relative px-5 py-28 sm:px-8">
+        <Glow className="left-1/2 top-1/2 h-[760px] w-[760px] -translate-x-1/2 -translate-y-1/2 opacity-60" />
 
-      <Rule />
+        <div className="mx-auto max-w-[1240px]">
+          <Reveal>
+            <Numeral n="01" />
+            <h2 className="font-display text-[clamp(30px,4.4vw,46px)] italic leading-tight text-ink">
+              记什么
+            </h2>
+          </Reveal>
 
-      {/* ------------------------------------------------ what it records */}
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[minmax(0,360px)_1fr]">
-        <div className="relative flex items-start justify-center">
-          <Globe cities={cities} />
-          <CompassRose className="pointer-events-none absolute -bottom-2 right-0 w-[86px] opacity-70 lg:right-4" />
-        </div>
+          <div className="mt-16 grid grid-cols-[minmax(0,1fr)] items-center gap-16 lg:grid-cols-[minmax(0,440px)_1fr]">
+            <Reveal className="relative flex justify-center" y={34}>
+              <Globe cities={cities} />
+              <CompassRose className="pointer-events-none absolute -bottom-6 right-2 w-[92px] opacity-60" />
+            </Reveal>
 
-        <div>
-          <h2 className="font-display text-[30px] italic text-ink">记什么</h2>
-
-          <dl className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-x-10 gap-y-6 sm:grid-cols-2">
-            {RECORDS.map((r) => (
-              <div key={r.k} className="border-l border-[rgba(176,122,99,.3)] pl-4">
-                <dt className="font-display text-[19px] italic text-ink">{r.k}</dt>
-                <dd className="mt-1 text-[12.5px] leading-relaxed text-mute-3">{r.v}</dd>
+            <div>
+              <div className="grid grid-cols-[minmax(0,1fr)] sm:grid-cols-2">
+                {RECORDS.map((r, i) => (
+                  <Reveal key={r.k} delay={i * 0.06}>
+                    <div className="border-b border-[rgba(236,229,230,.08)] py-5">
+                      <span className="mr-4 font-display text-[12px] italic text-brass">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="font-display text-[clamp(20px,2.2vw,26px)] italic text-ink">
+                        {r.k}
+                      </span>
+                    </div>
+                  </Reveal>
+                ))}
               </div>
-            ))}
-          </dl>
 
-          <div className="mt-10">
-            <div className="text-[11px] font-bold tracking-[.16em] text-mute-2">四个计划</div>
-            <div className="mt-4 flex flex-wrap gap-x-7 gap-y-3">
-              {PROGRAMS.filter((p) => p.id !== 'other').map((p) => (
-                <div key={p.id} className="flex items-center gap-[9px]">
-                  <span
-                    className="size-[9px] flex-none rounded-full"
-                    style={{ background: p.accent }}
-                  />
-                  <span className="text-[13px] text-ink-2">{p.cn}</span>
-                  <span className="text-[11.5px] text-mute-3">{p.name}</span>
+              <Reveal delay={0.1}>
+                <div className="mt-12">
+                  <div className="text-[11px] font-bold tracking-[.18em] text-mute-2">四个计划</div>
+                  <div className="mt-5 flex flex-wrap gap-x-8 gap-y-4">
+                    {PROGRAMS.filter((p) => p.id !== 'other').map((p) => (
+                      <div key={p.id} className="flex items-center gap-[10px]">
+                        <span
+                          className="size-[10px] flex-none rounded-full"
+                          style={{ background: p.accent, boxShadow: `0 0 12px ${p.accent}` }}
+                        />
+                        <span className="text-[13.5px] text-ink-2">{p.cn}</span>
+                        <span className="text-[11.5px] text-mute-3">{p.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+              </Reveal>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <Rule />
+      {/* ═══════════════════════════════════════════ 02 · how it's built */}
+      <section className="relative px-5 py-28 sm:px-8">
+        <Glow className="right-[-12%] top-[10%] h-[560px] w-[560px] opacity-50" />
 
-      {/* ------------------------------------------------ how it's built */}
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[1fr_minmax(0,300px)]">
-        <div>
-          <h2 className="font-display text-[30px] italic text-ink">怎么造的</h2>
+        <div className="mx-auto max-w-[1240px]">
+          <Reveal>
+            <Numeral n="02" />
+            <h2 className="font-display text-[clamp(30px,4.4vw,46px)] italic leading-tight text-ink">
+              怎么造的
+            </h2>
+          </Reveal>
 
+          <div className="mt-14 grid grid-cols-[minmax(0,1fr)] items-center gap-16 lg:grid-cols-[1fr_minmax(0,320px)]">
+            <dl>
+              {CRAFT.map((c, i) => (
+                <Reveal key={c.k} delay={i * 0.07}>
+                  <div className="grid grid-cols-[62px_minmax(0,1fr)] items-baseline gap-5 border-b border-[rgba(236,229,230,.08)] py-6">
+                    <dt className="text-[11px] font-bold tracking-[.16em] text-brass-2">{c.k}</dt>
+                    <dd className="text-[clamp(14px,1.5vw,16px)] leading-relaxed text-ink-2">
+                      {c.v}
+                    </dd>
+                  </div>
+                </Reveal>
+              ))}
+            </dl>
 
-          <dl className="mt-8 flex flex-col gap-5">
-            {CRAFT.map((c) => (
-              <div
-                key={c.k}
-                className="grid grid-cols-[64px_minmax(0,1fr)] items-baseline gap-4 border-b border-[rgba(236,229,230,.07)] pb-4"
-              >
-                <dt className="text-[11px] font-bold tracking-[.14em] text-brass-2">{c.k}</dt>
-                <dd className="text-[13.5px] leading-relaxed text-ink-2">{c.v}</dd>
-              </div>
-            ))}
-          </dl>
+            <Reveal delay={0.12} className="flex items-center justify-center">
+              <Airplane className="w-[220px] opacity-90" />
+            </Reveal>
+          </div>
         </div>
+      </section>
 
-        <div className="flex items-center justify-center">
-          <Airplane className="w-[190px] opacity-90" />
-        </div>
-      </div>
+      {/* ═══════════════════════════════════════════ closing */}
+      <section className="relative px-5 pb-32 pt-16 sm:px-8">
+        <Glow className="left-1/2 top-0 h-[560px] w-[720px] -translate-x-1/2 opacity-60" />
 
-      <Rule />
+        <Reveal className="relative text-center">
+          <svg width="30" height="30" viewBox="0 0 26 26" className="mx-auto" aria-hidden>
+            <path
+              d="M13 1 L16 10 L25 13 L16 16 L13 25 L10 16 L1 13 L10 10 Z"
+              fill="#b07a63"
+              fillOpacity=".5"
+            />
+          </svg>
 
-      {/* ------------------------------------------------ colophon */}
-      <div className="text-center">
-        <svg width="26" height="26" viewBox="0 0 26 26" className="mx-auto mb-5" aria-hidden>
-          <path d="M13 1 L16 10 L25 13 L16 16 L13 25 L10 16 L1 13 L10 10 Z" fill="#b07a63" fillOpacity=".45" />
-        </svg>
+          <div className="foil mt-8 font-display text-[clamp(34px,6vw,64px)] italic leading-none">
+            Grand Tour
+          </div>
 
-        <p className="mt-5 text-[11.5px] leading-relaxed tracking-[.1em] text-mute-3">
-          Grand Tour · {year} 
-        </p>
-      </div>
+          <p className="mt-7 text-[11.5px] tracking-[.2em] text-mute-3">
+            Grand Tour · {year}
+          </p>
+        </Reveal>
+      </section>
     </div>
   );
 }
