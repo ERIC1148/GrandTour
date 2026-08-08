@@ -20,14 +20,16 @@ import { Cities } from './screens/Cities';
 import { Passport } from './screens/Passport';
 import { Spend } from './screens/Spend';
 import { Stays } from './screens/Stays';
+import { About } from './screens/About';
 
-type Tab = 'passport' | 'stays' | 'cities' | 'spend';
+type Tab = 'passport' | 'stays' | 'cities' | 'spend' | 'about';
 
 const TABS: { id: Tab; label: string; cn: string }[] = [
   { id: 'passport', label: 'Passport', cn: '护照' },
   { id: 'stays', label: 'Stays', cn: '入住' },
   { id: 'cities', label: 'Cities', cn: '城市' },
   { id: 'spend', label: 'Spend', cn: '花费' },
+  { id: 'about', label: 'About', cn: '关于' },
 ];
 
 export default function App() {
@@ -134,6 +136,7 @@ export default function App() {
         {tab === 'stays' && <Stays stays={stays} onOpenStay={setEditing} />}
         {tab === 'cities' && <Cities stays={stays} currency={profile.currency} />}
         {tab === 'spend' && <Spend stays={stays} year={year} currency={profile.currency} />}
+        {tab === 'about' && <About stays={stays} />}
       </motion.main>
 
       <MobileNav tab={tab} onTab={setTab} onAdd={() => setAdding(true)} />
@@ -369,7 +372,7 @@ function MobileNav({
       className="glass fixed inset-x-0 bottom-0 z-40 flex items-center justify-between border-t border-[rgba(236,229,230,.06)] px-6 pt-3 md:hidden"
       style={{ paddingBottom: 'calc(0.75rem + var(--safe-bottom))' }}
     >
-      <div className="flex gap-5">
+      <div className="flex gap-[18px]">
         {TABS.map((t) => {
           const on = tab === t.id;
           return (
