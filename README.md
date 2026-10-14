@@ -96,16 +96,19 @@ The debug APK lands in `android/app/build/outputs/apk/debug/`.
 Two tables, both under row-level security keyed on `auth.uid()`:
 
 - `stays` — one row per stay, with `program`, `brand`, `hotel`, `city`,
-  `check_in`, `nights`, `room_type`, `upgrade`, `room_number`, `currency`,
-  `price`, `points_spent`, `points`, `award_stay`, `rating`, `note`
+  `country`, `check_in`, `nights`, `room_type`, `upgrade`, `room_number`,
+  `currency`, `price`, `points_spent`, `points`, `award_stay`, `rating`, `note`
 - `profiles` — annual night goal, preferred currency, and elite tier per programme
 
 ## Layout
 
 ```
 src/
-  lib/       brands catalogue · supabase client · offline store · statistics
-  components/ keycard · add-edit form · charts · shared UI
-  screens/   passport · stays · cities · spend · auth
+  lib/          brands catalogue · supabase client · offline store · statistics
+  components/   keycard · add-edit form · charts · shared UI
+  screens/      passport · stays · cities · spend · about · auth
+  styles/       theme tokens, and the paper, glass and foil treatments
+worker/         Cloudflare Worker: static assets, plus the generated /env.js
+supabase/       send-email edge function — auth mail via Microsoft Graph
 public/brands/  brand logo art
 ```
